@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 export default function Signup() {
     return (
-        <div><div className="bg-white p-10 rounded-lg shadow-lg w-full max-w-lg">
+        <div><div className="bg-white p-10 rounded-lg shadow-lg w-full max-w-lg mx-auto">
             <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">
                 Create an Account
             </h2>
