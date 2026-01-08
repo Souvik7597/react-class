@@ -50,13 +50,53 @@
 
 //seperate files
 
-import { useState } from "react"
+// import { useState } from "react"
+// import TodoForm from "./components/TodoForm"
+// import TodoList from "./components/TodoList"
+
+// export default function App() {
+ 
+//   const [task, setTask] = useState([])
+
+//   const addTodo = (data,setData) => {
+//     setTask([...task, { text: data, id: Date.now() }])
+//     setData("")
+//   }
+
+//   return (
+//     <div className='h-[100vh] flex items-center justify-center'>
+//       <div className="bg-white shadow-2xl rounded-2xl w-full max-w-md p-6">
+//         <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
+//           📝 To-Do List
+//         </h1>
+//         <TodoForm  addTodo={addTodo}/>
+//         <TodoList  task={task}/>
+//       </div>
+//     </div>
+//   )
+// }
+
+
+//localStorage
+
+
+import { useEffect, useState } from "react"
 import TodoForm from "./components/TodoForm"
 import TodoList from "./components/TodoList"
 
 export default function App() {
  
-  const [task, setTask] = useState([])
+  // const [task, setTask] = useState([])
+
+  const [task, setTask] = useState(() => {
+    const savedTodos = localStorage.getItem('todos');
+    return savedTodos ? JSON.parse(savedTodos) : [];
+  })
+
+  useEffect(() => {
+  localStorage.setItem('todos', JSON.stringify(task));
+}, [task]);
+
 
   const addTodo = (data,setData) => {
     setTask([...task, { text: data, id: Date.now() }])
@@ -75,4 +115,3 @@ export default function App() {
     </div>
   )
 }
-

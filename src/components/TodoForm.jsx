@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
-function TodoForm({addTodo}) {
-     const [data, setData] = useState("")
-const handleSubmit = ()=>{
-    addTodo(data,setData)
-}
+function TodoForm({ addTodo }) {
+    const [data, setData] = useState("")
+    const handleSubmit = () => {
+        if (!data.trim()) return
+        addTodo(data, setData)
+    }
     return (
         <div className="flex mb-4">
             <input
