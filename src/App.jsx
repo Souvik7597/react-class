@@ -157,10 +157,66 @@
 
 // delete with modal
 
+// import { useEffect, useState } from "react"
+// import TodoForm from "./components/TodoForm"
+// import TodoList from "./components/TodoList"
+// import DeleteModal from "./components/DeleteModal";
+
+// export default function App() {
+
+//   const [task, setTask] = useState(() => {
+//     const savedTodos = localStorage.getItem('todos');
+//     return savedTodos ? JSON.parse(savedTodos) : [];
+//   })
+
+//   const [showDelModel, setShowDelModel] = useState(false)
+//   const [todoToDelete, setTodoToDelete] = useState(null)
+
+//   const handleDeleteClick = (id)=>{
+//     setTodoToDelete(id)
+//     setShowDelModel(true)
+//   }
+//   const confirmDelete = ()=>{
+//     setTask(task.filter((item) => item.id !== todoToDelete))
+//     setShowDelModel(false)
+//     setTodoToDelete(null)
+//   }
+//   const cancelDelete = ()=>{
+//     setShowDelModel(false)
+//     setTodoToDelete(null)
+//   }
+
+
+//   useEffect(() => {
+//     localStorage.setItem('todos', JSON.stringify(task));
+//   }, [task]);
+
+//   const addTodo = (data, setData) => {
+//     setTask([...task, { text: data, id: Date.now() }])
+//     setData("")
+//   }
+
+//   return (
+//     <div className='h-[100vh] flex items-center justify-center'>
+//       <div className="bg-white shadow-2xl rounded-2xl w-full max-w-md p-6">
+//         <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
+//           📝 To-Do List
+//         </h1>
+//         <TodoForm addTodo={addTodo} />
+//         <TodoList task={task} delTodo={handleDeleteClick} />
+//       </div>
+//       {showDelModel && (<DeleteModal onConfirm={confirmDelete} onCancel={cancelDelete}   />)}
+//     </div>
+//   )
+// }
+
+// update todo 
+
 import { useEffect, useState } from "react"
 import TodoForm from "./components/TodoForm"
 import TodoList from "./components/TodoList"
 import DeleteModal from "./components/DeleteModal";
+import UpdateModal from "./components/UpdateModal";
 
 export default function App() {
 
@@ -172,21 +228,40 @@ export default function App() {
   const [showDelModel, setShowDelModel] = useState(false)
   const [todoToDelete, setTodoToDelete] = useState(null)
 
-  const handleDeleteClick = (id)=>{
+  const [showEditModel, setShowEditModel] = useState(false)
+  const [todoToEdit, setTodoToEdit] = useState(null)
+
+
+  //delete
+  const handleDeleteClick = (id) => {
     setTodoToDelete(id)
     setShowDelModel(true)
   }
-  const confirmDelete = ()=>{
+  const confirmDelete = () => {
     setTask(task.filter((item) => item.id !== todoToDelete))
     setShowDelModel(false)
     setTodoToDelete(null)
   }
-  const cancelDelete = ()=>{
+  const cancelDelete = () => {
     setShowDelModel(false)
     setTodoToDelete(null)
   }
 
 
+  //edit
+  const handleEditClick = (task) => {
+    setTodoToEdit(task)
+    setShowEditModel(true)
+  }
+  const confirmEdit = (newText) => {
+    setTask(task.map((item) => item.id === todoToEdit.id ? { ...task, text: newText } : item))
+    setShowEditModel(false)
+    setTodoToEdit(null)
+  }
+  const cancelEdit = () => {
+    setShowEditModel(false)
+    setTodoToEdit(null)
+  }
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(task));
   }, [task]);
@@ -203,9 +278,11 @@ export default function App() {
           📝 To-Do List
         </h1>
         <TodoForm addTodo={addTodo} />
-        <TodoList task={task} delTodo={handleDeleteClick} />
+        <TodoList task={task} delTodo={handleDeleteClick} editTodo={handleEditClick} />
       </div>
-      {showDelModel && (<DeleteModal onConfirm={confirmDelete} onCancel={cancelDelete}   />)}
+      {showDelModel && (<DeleteModal onConfirm={confirmDelete} onCancel={cancelDelete} />)}
+
+      {showEditModel && (<UpdateModal onConfirm={confirmEdit} onCancel={cancelEdit} currentText={todoToEdit.text} />)}
     </div>
   )
 }
