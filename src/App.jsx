@@ -55,7 +55,7 @@
 // import TodoList from "./components/TodoList"
 
 // export default function App() {
- 
+
 //   const [task, setTask] = useState([])
 
 //   const addTodo = (data,setData) => {
@@ -118,9 +118,49 @@
 
 //delete
 
+// import { useEffect, useState } from "react"
+// import TodoForm from "./components/TodoForm"
+// import TodoList from "./components/TodoList"
+
+// export default function App() {
+
+//   const [task, setTask] = useState(() => {
+//     const savedTodos = localStorage.getItem('todos');
+//     return savedTodos ? JSON.parse(savedTodos) : [];
+//   })
+
+//   useEffect(() => {
+//     localStorage.setItem('todos', JSON.stringify(task));
+//   }, [task]);
+
+//   const delTodo = (id) => {
+//     console.log(id)
+//     setTask(task.filter((item) => item.id !== id))
+//   }
+//   const addTodo = (data, setData) => {
+//     setTask([...task, { text: data, id: Date.now() }])
+//     setData("")
+//   }
+
+//   return (
+//     <div className='h-[100vh] flex items-center justify-center'>
+//       <div className="bg-white shadow-2xl rounded-2xl w-full max-w-md p-6">
+//         <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
+//           📝 To-Do List
+//         </h1>
+//         <TodoForm addTodo={addTodo} />
+//         <TodoList task={task} delTodo={delTodo} />
+//       </div>
+//     </div>
+//   )
+// }
+
+// delete with modal
+
 import { useEffect, useState } from "react"
 import TodoForm from "./components/TodoForm"
 import TodoList from "./components/TodoList"
+import DeleteModal from "./components/DeleteModal";
 
 export default function App() {
 
@@ -129,15 +169,29 @@ export default function App() {
     return savedTodos ? JSON.parse(savedTodos) : [];
   })
 
-  useEffect(() => {
-  localStorage.setItem('todos', JSON.stringify(task));
-}, [task]);
+  const [showDelModel, setShowDelModel] = useState(false)
+  const [todoToDelete, setTodoToDelete] = useState(null)
 
-const delTodo = (id)=>{
-  console.log(id)
-  setTask(task.filter((item)=>item.id !== id))
-}
-  const addTodo = (data,setData) => {
+  const handleDeleteClick = (id)=>{
+    setTodoToDelete(id)
+    setShowDelModel(true)
+  }
+  const confirmDelete = ()=>{
+    setTask(task.filter((item) => item.id !== todoToDelete))
+    setShowDelModel(false)
+    setTodoToDelete(null)
+  }
+  const cancelDelete = ()=>{
+    setShowDelModel(false)
+    setTodoToDelete(null)
+  }
+
+
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(task));
+  }, [task]);
+
+  const addTodo = (data, setData) => {
     setTask([...task, { text: data, id: Date.now() }])
     setData("")
   }
@@ -148,9 +202,10 @@ const delTodo = (id)=>{
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
           📝 To-Do List
         </h1>
-        <TodoForm  addTodo={addTodo}/>
-        <TodoList  task={task} delTodo={delTodo}/>
+        <TodoForm addTodo={addTodo} />
+        <TodoList task={task} delTodo={handleDeleteClick} />
       </div>
+      {showDelModel && (<DeleteModal onConfirm={confirmDelete} onCancel={cancelDelete}   />)}
     </div>
   )
 }
